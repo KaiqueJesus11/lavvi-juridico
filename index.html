@@ -234,6 +234,32 @@ html,body{height:100%;margin:0;padding:0;overflow:hidden}
 .nav-links .btn-logout:hover{background:var(--bad-bg)}
 .nav-links .who{color:var(--muted);font-size:12px}
 
+/* === COLLAPSIBLE PANELS === */
+.panel-toggle{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border:1px solid var(--line);border-radius:6px;background:var(--surface);cursor:pointer;color:var(--muted);font-size:16px;font-family:inherit;flex:0 0 auto;line-height:1}
+.panel-toggle:hover{background:var(--bg);color:var(--ink)}
+.panel-label-v{writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;flex:1;text-align:center;cursor:pointer}
+
+/* Side collapsed strip */
+.side-collapsed-strip{display:none;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;flex:1;width:100%}
+.shell.side-collapsed .side-collapsed-strip{display:flex}
+.shell.side-collapsed .side .side-top,
+.shell.side-collapsed .side .list,
+.shell.side-collapsed .side .side-foot{display:none}
+.shell.side-collapsed .side{padding:0;overflow:visible}
+.shell.side-collapsed{grid-template-columns:48px minmax(0,1fr) minmax(0,1fr)}
+
+/* Doc collapsed strip */
+.doc-collapsed-strip{display:none;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;flex:1}
+.shell.doc-collapsed .doc-collapsed-strip{display:flex}
+.shell.doc-collapsed .doc>*:not(.doc-collapsed-strip){display:none!important}
+.shell.doc-collapsed .doc{padding:0;overflow:visible}
+.shell.doc-collapsed{grid-template-columns:260px minmax(0,1fr) 48px}
+.shell.side-collapsed.doc-collapsed{grid-template-columns:48px minmax(0,1fr) 48px}
+
+/* Doc header toggle */
+.doc-h{position:relative}
+.doc-h .panel-toggle{position:absolute;right:0;top:0}
+
 /* === NO-SCROLL FIX FOR MAIN APP === */
 .app{height:100%;overflow:hidden}
 .shell{overflow:hidden}
@@ -334,11 +360,18 @@ html,body{height:100%;margin:0;padding:0;overflow:hidden}
   </div>
 </header>
 
-<div class="shell">
+<div class="shell side-collapsed">
 
 <nav class="pane side" id="side" aria-label="Histórico de análises">
+  <div class="side-collapsed-strip">
+    <button class="panel-toggle" onclick="toggleSide()" title="Expandir análises">›</button>
+    <span class="panel-label-v" onclick="toggleSide()">Análises</span>
+  </div>
   <div class="side-top">
-    <button class="new" data-case="b">+ Nova análise</button>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="new" data-case="b" style="flex:1">+ Nova análise</button>
+      <button class="panel-toggle" onclick="toggleSide()" title="Recolher análises">‹</button>
+    </div>
     <label for="busca" hidden>Buscar análises</label>
     <input id="busca" placeholder="Buscar por caso, unidade, tema…">
   </div>
@@ -386,7 +419,11 @@ html,body{height:100%;margin:0;padding:0;overflow:hidden}
     <div class="compose"><label for="m-a" hidden>Mensagem</label><textarea id="m-a" rows="2" placeholder="Peça ajustes ou clique num parágrafo para falar só dele…"></textarea><button class="btn p">Enviar</button></div>
   </section>
   <section class="pane doc">
-    <div class="doc-h"><div class="row"><b>Contranotificação · v3</b><span>7 parágrafos · 8 referências</span><span class="vers"><span>v1</span><span>v2</span><span class="on">v3</span></span></div><div class="legend"><span><i style="background:var(--ok-bg);border-color:var(--ok-line)"></i>Com fonte</span><span><i style="background:var(--info-bg);border-color:var(--info-line)"></i>Alterado nesta versão</span></div></div>
+    <div class="doc-collapsed-strip">
+      <button class="panel-toggle" onclick="toggleDoc()" title="Expandir documento">‹</button>
+      <span class="panel-label-v" onclick="toggleDoc()">Documento</span>
+    </div>
+    <div class="doc-h"><button class="panel-toggle" onclick="toggleDoc()" title="Recolher documento">›</button><div class="row"><b>Contranotificação · v3</b><span>7 parágrafos · 8 referências</span><span class="vers"><span>v1</span><span>v2</span><span class="on">v3</span></span></div><div class="legend"><span><i style="background:var(--ok-bg);border-color:var(--ok-line)"></i>Com fonte</span><span><i style="background:var(--info-bg);border-color:var(--info-line)"></i>Alterado nesta versão</span></div></div>
     <article class="paper">
       <p class="pre">São Paulo, 27 de outubro de 2026.</p>
       <p class="pre"><strong>Ref.: Resposta — Notificação Extrajudicial datada de 13/10/2026 | Unidade 1203, Torre B do Empreendimento Villa Lisboa ("Imóvel")</strong></p>
@@ -421,7 +458,11 @@ html,body{height:100%;margin:0;padding:0;overflow:hidden}
     <div class="compose"><label for="m-b" hidden>Mensagem</label><textarea id="m-b" rows="2" placeholder="Cole o texto da notificação ou descreva o caso…"></textarea><button class="btn p">Enviar</button></div>
   </section>
   <section class="pane doc">
-    <div class="doc-h"><b style="color:var(--muted)">Documento · ainda não gerado</b></div>
+    <div class="doc-collapsed-strip">
+      <button class="panel-toggle" onclick="toggleDoc()" title="Expandir documento">‹</button>
+      <span class="panel-label-v" onclick="toggleDoc()">Documento</span>
+    </div>
+    <div class="doc-h"><button class="panel-toggle" onclick="toggleDoc()" title="Recolher documento">›</button><b style="color:var(--muted)">Documento · ainda não gerado</b></div>
     <div class="empty"><b>O documento vivo aparece aqui</b><p>Depois que a notificação for lida e a postura confirmada, a resposta é gerada parágrafo a parágrafo, cada um com a referência do acervo e o raciocínio. O validador roda em seguida, automaticamente.</p><div class="flow"><span><i class="on">1</i>Ler</span><span><i>2</i>Gerar</span><span><i>3</i>Validar</span><span><i>4</i>Aprovar</span></div></div>
   </section>
 </div>
@@ -451,7 +492,11 @@ html,body{height:100%;margin:0;padding:0;overflow:hidden}
     <div class="compose"><label for="m-c" hidden>Mensagem</label><textarea id="m-c" rows="2" placeholder="Peça ajustes ou clique num parágrafo para falar só dele…"></textarea><button class="btn p">Enviar</button></div>
   </section>
   <section class="pane doc">
-    <div class="doc-h"><div class="row"><b>Resposta ao Procon · v2</b><span>6 parágrafos · 5 referências</span><span class="vers"><span>v1</span><span class="on">v2</span></span></div><span class="pill b">Aprovação bloqueada · §3 sem prova</span></div>
+    <div class="doc-collapsed-strip">
+      <button class="panel-toggle" onclick="toggleDoc()" title="Expandir documento">‹</button>
+      <span class="panel-label-v" onclick="toggleDoc()">Documento</span>
+    </div>
+    <div class="doc-h"><button class="panel-toggle" onclick="toggleDoc()" title="Recolher documento">›</button><div class="row"><b>Resposta ao Procon · v2</b><span>6 parágrafos · 5 referências</span><span class="vers"><span>v1</span><span class="on">v2</span></span></div><span class="pill b">Aprovação bloqueada · §3 sem prova</span></div>
     <article class="paper">
       <p class="pre">Ao Procon-SP · Fundação de Proteção e Defesa do Consumidor</p>
       <p class="pre"><strong>Ref.: Reclamação FA nº 2026-118342 · Reclamante: <span class="mark">[NOME]</span> · Unidade 304, Jardins Residence</strong></p>
@@ -493,7 +538,11 @@ html,body{height:100%;margin:0;padding:0;overflow:hidden}
     <div class="compose"><span style="flex:1;font-size:13px;color:var(--muted)">Conversa encerrada. Reabra para alterar o documento.</span><button class="btn">Reabrir como v5</button></div>
   </section>
   <section class="pane doc">
-    <div class="doc-h"><div class="row"><b>Contranotificação · v4 · final</b><span class="vers"><span>v1</span><span>v2</span><span>v3</span><span class="on" style="background:var(--accent);border-color:var(--accent)">v4</span></span></div><span class="pill o">Travado · aprovado em duas instâncias</span></div>
+    <div class="doc-collapsed-strip">
+      <button class="panel-toggle" onclick="toggleDoc()" title="Expandir documento">‹</button>
+      <span class="panel-label-v" onclick="toggleDoc()">Documento</span>
+    </div>
+    <div class="doc-h"><button class="panel-toggle" onclick="toggleDoc()" title="Recolher documento">›</button><div class="row"><b>Contranotificação · v4 · final</b><span class="vers"><span>v1</span><span>v2</span><span>v3</span><span class="on" style="background:var(--accent);border-color:var(--accent)">v4</span></span></div><span class="pill o">Travado · aprovado em duas instâncias</span></div>
     <article class="paper locked">
       <p class="pre">São Paulo, 24 de outubro de 2026.</p>
       <p class="pre"><strong>Ref.: Resposta — Notificação Extrajudicial datada de 09/10/2026 | Unidade 1802, Torre A do Empreendimento Villa Lisboa ("Imóvel")</strong></p>
@@ -534,7 +583,11 @@ html,body{height:100%;margin:0;padding:0;overflow:hidden}
     <div class="compose"><label for="m-e" hidden>Mensagem</label><textarea id="m-e" rows="2" placeholder="Responder à coordenação ou pedir outra variação…"></textarea><button class="btn p">Enviar</button></div>
   </section>
   <section class="pane doc">
-    <div class="doc-h"><div class="row"><b>Contranotificação · v3 · com comentários</b><span class="vers"><span>v1</span><span>v2</span><span class="on">v3</span></span></div><span class="pill g">Postura: defesa integral → com diálogo</span></div>
+    <div class="doc-collapsed-strip">
+      <button class="panel-toggle" onclick="toggleDoc()" title="Expandir documento">‹</button>
+      <span class="panel-label-v" onclick="toggleDoc()">Documento</span>
+    </div>
+    <div class="doc-h"><button class="panel-toggle" onclick="toggleDoc()" title="Recolher documento">›</button><div class="row"><b>Contranotificação · v3 · com comentários</b><span class="vers"><span>v1</span><span>v2</span><span class="on">v3</span></span></div><span class="pill g">Postura: defesa integral → com diálogo</span></div>
     <article class="paper">
       <p class="pre">São Paulo, 21 de outubro de 2026.</p>
       <p class="pre"><strong>Ref.: Resposta — Notificação Extrajudicial datada de 06/10/2026 | Unidade 1105, Torre Única do Empreendimento Jardins Residence ("Imóvel")</strong></p>
@@ -699,6 +752,14 @@ html,body{height:100%;margin:0;padding:0;overflow:hidden}
   };
   // Close modal on overlay click
   document.getElementById('modal-user').addEventListener('click', function(e){ if(e.target === this) closeUserModal(); });
+
+  /* ========== COLLAPSIBLE PANELS ========== */
+  window.toggleSide = function(){
+    document.querySelector('.shell').classList.toggle('side-collapsed');
+  };
+  window.toggleDoc = function(){
+    document.querySelector('.shell').classList.toggle('doc-collapsed');
+  };
 
   /* ========== ORIGINAL POC LOGIC (case switching) ========== */
   var info = {
